@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/* かぞく精算帳 デザイントークン（design.html 02-COLOR / 03-TYPOGRAPHY 準拠） */
+@theme {
+  --color-bg: #f7f7f4;
+  --color-surface: #ffffff;
+  --color-border: #ecebe6;
+  --color-line: #f4f3ef;
+
+  --color-ink: #1a1c19;
+  --color-sub: #54564f;
+  --color-muted: #797b73;
+  --color-faint: #9a9c94;
+  --color-hint: #b0b1aa;
+
+  --color-primary: #1a9b5e;
+  --color-primary-deep: #138a53;
+  --color-primary-tint: #e7f4ec;
+  --color-primary-line: #cde9d7;
+
+  --color-coral: #db5c4c;
+  --color-coral-ink: #c9483a;
+  --color-coral-tint: #fcedea;
+  --color-coral-line: #f3d6d1;
+
+  --color-amber: #e0a23b;
+  --color-amber-ink: #b27a1e;
+  --color-amber-tint: #fcf3e2;
+
+  --font-sans: var(--font-noto-sans-jp), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 18px;
+  --radius-btn: 14px;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 金額は等幅数字で桁を揃える（金融アプリの精度） */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* モバイルフレーム: 大画面でも中央に寄せて実機幅で表示 */
+.app-shell {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  min-height: 100dvh;
+  background: var(--color-bg);
+}
+
+/* 画面下部の固定ナビ用に下端のセーフエリアを確保 */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* キーボード操作の可視フォーカス（品質フロア） */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* スクロールバーを控えめに */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* モーション設定を尊重 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
