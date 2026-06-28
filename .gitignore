@@ -1,0 +1,35 @@
+# ============================================================
+# git 管理は「デプロイに必要なコードのみ」。
+# 進行管理・協働・設計ドキュメント・AIツール設定はリポジトリに含めない
+# （ローカル運用）。
+# ============================================================
+
+# 依存・ビルド生成物
+node_modules/
+.next/
+out/
+build/
+dist/
+bin/
+obj/
+*.user
+
+# 秘匿情報・環境変数
+.env
+.env.*
+!.env.example
+
+# OS / エディタ
+.DS_Store
+.vscode/
+.idea/
+
+# AIツール・協働・進行管理・設計（デプロイ不要）
+.claude/
+.cursor/
+CLAUDE.md
+AGENTS.md
+ai-share/
+dev.log/
+docs/
+family-expense-app-spec-pack/
