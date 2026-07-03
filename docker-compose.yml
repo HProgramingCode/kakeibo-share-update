@@ -1,0 +1,59 @@
+# かぞく精算帳 開発環境（db / backend / frontend）
+# ------------------------------------------------------------
+# 既定の `docker compose up` は db のみ起動する（backend/frontend は profile "app"）。
+# 全体を起動したいときは `docker compose --profile app up`。
+# コンテナ間は localhost ではなく「サービス名」(db / backend) で通信する。
+# ------------------------------------------------------------
+
+services:
+  # ── データベース（profile 無し＝常に起動）────────────────────
+  db:
+    image: postgres:16                   # 公式イメージをそのまま利用
+    environment:                         # 初回起動時にDBとユーザーを作成
+      POSTGRES_DB: kakeibo
+      POSTGRES_USER: kakeibo
+      POSTGRES_PASSWORD: kakeibo_dev     # 開発用。実運用では秘匿する
+    ports:
+      - "55432:5432"                     # ローカル5432使用中のためホスト側は55432。コンテナ内は5432
+    volumes:
+      - db-data:/var/lib/postgresql/data # データを永続化
+    healthcheck:                         # DBが受付OKになったか判定
+      test: ["CMD-SHELL", "pg_isready -U kakeibo"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ── バックエンド（中身は Phase 1 で実装。profile "app" でのみ起動）──
+  backend:
+    build: ./backend                     # backend/Dockerfile からビルド
+    environment:
+      # 接続先ホストは "localhost" ではなくサービス名 "db"
+      ConnectionStrings__Default: "Host=db;Database=kakeibo;Username=kakeibo;Password=kakeibo_dev"
+      ASPNETCORE_URLS: "http://+:8080"
+      Jwt__Key: "dev-only-secret-change-me"   # 開発用のJWT署名鍵
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app                   # ソースを同期（編集が即反映）
+    depends_on:
+      db:
+        condition: service_healthy       # DBが healthy になってから起動
+    profiles: ["app"]                    # 既定では起動しない
+
+  # ── フロントエンド（profile "app" でのみ起動）─────────────────
+  frontend:
+    build: ./frontend
+    environment:
+      API_BASE_URL: "http://backend:8080"               # サーバー側→backendはサービス名で
+      NEXT_PUBLIC_API_BASE_URL: "http://localhost:8080" # ブラウザ側→localhost
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app                  # ソース同期（ホットリロード）
+      - /app/node_modules                # node_modules はコンテナ側を優先
+    depends_on:
+      - backend
+    profiles: ["app"]                    # 既定では起動しない
+
+volumes:
+  db-data:                               # 名前付きボリューム（DBデータの保管庫）
