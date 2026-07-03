@@ -2,7 +2,9 @@ using KakeiboShare.Domain.Common;
 
 namespace KakeiboShare.Domain.Expenses;
 
-/// <summary>支出（集約ルート）。負担合計＝金額。未精算のときのみ編集・削除できる。</summary>
+/// <summary>
+/// 支出（集約ルート）。負担合計＝金額。未精算のときのみ編集・削除できる。
+/// </summary>
 public sealed class Expense
 {
     public Guid Id { get; }
@@ -39,14 +41,18 @@ public sealed class Expense
         return new Expense(Guid.NewGuid(), groupId, payerId, category, splitType, amount, shares);
     }
 
-    /// <summary>精算に紐付けてロックする。未精算のときのみ可能。</summary>
+    /// <summary>
+    /// 精算に紐付けてロックする。未精算のときのみ可能。
+    /// </summary>
     public void AttachToSettlement(Guid settlementId)
     {
         if (IsSettled) throw new DomainException("既に精算確定済みの支出です");
         SettlementId = settlementId;
     }
 
-    /// <summary>編集・削除の前提を満たすか検証する。精算確定済みなら例外。</summary>
+    /// <summary>
+    /// 編集・削除の前提を満たすか検証する。精算確定済みなら例外。
+    /// </summary>
     public void EnsureEditable()
     {
         if (IsSettled) throw new DomainException("精算確定済みの支出は編集・削除できません");

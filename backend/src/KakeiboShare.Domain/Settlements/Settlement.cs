@@ -2,7 +2,9 @@ using KakeiboShare.Domain.Common;
 
 namespace KakeiboShare.Domain.Settlements;
 
-/// <summary>精算（集約ルート）。確定すると対象支出をロックする。MVPは確定時にのみ作成する。</summary>
+/// <summary>
+/// 精算（集約ルート）。確定すると対象支出をロックする。MVPは確定時にのみ作成する。
+/// </summary>
 public sealed class Settlement
 {
     public Guid Id { get; }

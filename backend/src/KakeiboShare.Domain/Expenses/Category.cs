@@ -1,6 +1,8 @@
 namespace KakeiboShare.Domain.Expenses;
 
-/// <summary>支出カテゴリ（固定enum・マスタは持たない）。DBには文字列で保存する。</summary>
+/// <summary>
+/// 支出カテゴリ（固定enum・マスタは持たない）。DBには文字列で保存する。
+/// </summary>
 public enum Category
 {
     Food,          // 食費

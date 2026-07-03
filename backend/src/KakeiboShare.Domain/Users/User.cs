@@ -2,7 +2,9 @@ using KakeiboShare.Domain.Common;
 
 namespace KakeiboShare.Domain.Users;
 
-/// <summary>ユーザー（集約ルート）。Emailは一意（DB制約）。パスワードは必ずハッシュで保持する。</summary>
+/// <summary>
+/// ユーザー（集約ルート）。Emailは一意（DB制約）。パスワードは必ずハッシュで保持する。
+/// </summary>
 public sealed class User
 {
     public Guid Id { get; }

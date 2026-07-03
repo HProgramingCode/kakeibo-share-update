@@ -2,7 +2,9 @@ using KakeiboShare.Domain.Common;
 
 namespace KakeiboShare.Domain.Expenses;
 
-/// <summary>割り勘計算（純粋関数）。負担合計は必ず金額に一致し、端数・丸め差は支払者が吸収する。</summary>
+/// <summary>
+/// 割り勘計算（純粋関数）。負担合計は必ず金額に一致し、端数・丸め差は支払者が吸収する。
+/// </summary>
 public static class SplitCalculator
 {
     public static IReadOnlyDictionary<Guid, int> SplitEqual(int amount, IReadOnlyList<Guid> memberIds, Guid payerId)

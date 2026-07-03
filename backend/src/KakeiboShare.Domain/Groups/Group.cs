@@ -2,10 +2,12 @@ using KakeiboShare.Domain.Common;
 
 namespace KakeiboShare.Domain.Groups;
 
-/// <summary>グループ（集約ルート）。メンバーは(Group,User)で一意。招待コードは再発行で旧コードが無効化される。</summary>
+/// <summary>
+/// グループ（集約ルート）。メンバーは(Group,User)で一意。招待コードは再発行で旧コードが無効化される。
+/// </summary>
 public sealed class Group
 {
-    private readonly List<Guid> _memberUserIds = new();
+    private readonly List<Guid> _memberUserIds = [];
 
     public Guid Id { get; }
     public string Name { get; private set; }
@@ -28,13 +30,17 @@ public sealed class Group
         return group;
     }
 
-    /// <summary>メンバーを追加する。(Group,User)は一意なので二重参加は不可。</summary>
+    /// <summary>
+    /// メンバーを追加する。(Group,User)は一意なので二重参加は不可。
+    /// </summary>
     public void AddMember(Guid userId)
     {
         if (_memberUserIds.Contains(userId)) throw new DomainException("既に参加済みのメンバーです");
         _memberUserIds.Add(userId);
     }
 
-    /// <summary>招待コードを再発行する。旧コードは置き換えられ無効化される。</summary>
+    /// <summary>
+    /// 招待コードを再発行する。旧コードは置き換えられ無効化される。
+    /// </summary>
     public void RegenerateInvite() => InviteCode = InviteCode.Generate();
 }

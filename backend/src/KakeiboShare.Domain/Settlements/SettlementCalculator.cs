@@ -3,10 +3,14 @@ using KakeiboShare.Domain.Expenses;
 
 namespace KakeiboShare.Domain.Settlements;
 
-/// <summary>精算計算（純粋関数・ADR-0001）。純額（総和0）から送金本数最小の送金案を求める。</summary>
+/// <summary>
+/// 精算計算（純粋関数・ADR-0001）。純額（総和0）から送金本数最小の送金案を求める。
+/// </summary>
 public static class SettlementCalculator
 {
-    /// <summary>未精算支出群から各メンバーの純額（立替 − 負担）を求める。総和は必ず0。</summary>
+    /// <summary>
+    /// 未精算支出群から各メンバーの純額（立替 − 負担）を求める。総和は必ず0。
+    /// </summary>
     public static IReadOnlyDictionary<Guid, int> NetBalances(IEnumerable<Expense> expenses)
     {
         var net = new Dictionary<Guid, int>();
@@ -20,7 +24,9 @@ public static class SettlementCalculator
     }
 
 
-    /// <summary>厳密な総当たりを行う純額の人数上限。これを超えたら greedy にフォールバック。</summary>
+    /// <summary>
+    /// 厳密な総当たりを行う純額の人数上限。これを超えたら greedy にフォールバック。
+    /// </summary>
     private const int MaxExact = 10;
 
     public static IReadOnlyList<Transfer> MinTransfers(IReadOnlyDictionary<Guid, int> net)
