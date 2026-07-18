@@ -21,6 +21,9 @@ public sealed class Group
         InviteCode = inviteCode;
     }
 
+    /// <summary>
+    /// グループ名と作成者からグループを新規作成する。作成者は最初のメンバーになる。
+    /// </summary>
     public static Group Create(string name, Guid creatorId)
     {
         if (string.IsNullOrWhiteSpace(name)) throw new DomainException("グループ名は必須です");
@@ -31,12 +34,31 @@ public sealed class Group
     }
 
     /// <summary>
+    /// 永続化層からの再構成用（Phase 3）。
+    /// </summary>
+    internal static Group Reconstitute(Guid id, string name, InviteCode inviteCode, IEnumerable<Guid> memberUserIds)
+    {
+        var group = new Group(id, name, inviteCode);
+        group._memberUserIds.AddRange(memberUserIds);
+        return group;
+    }
+
+    /// <summary>
     /// メンバーを追加する。(Group,User)は一意なので二重参加は不可。
     /// </summary>
     public void AddMember(Guid userId)
     {
         if (_memberUserIds.Contains(userId)) throw new DomainException("既に参加済みのメンバーです");
         _memberUserIds.Add(userId);
+    }
+
+    /// <summary>
+    /// グループ名を変更する。
+    /// </summary>
+    public void Rename(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) throw new DomainException("グループ名は必須です");
+        Name = name.Trim();
     }
 
     /// <summary>

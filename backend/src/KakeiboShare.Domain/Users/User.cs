@@ -20,6 +20,9 @@ public sealed class User
         PasswordHash = passwordHash;
     }
 
+    /// <summary>
+    /// メール・名前・ハッシュからユーザーを新規作成する。
+    /// </summary>
     public static User Create(string email, string name, string passwordHash)
     {
         if (string.IsNullOrWhiteSpace(email)) throw new DomainException("メールアドレスは必須です");
@@ -28,4 +31,10 @@ public sealed class User
 
         return new User(Guid.NewGuid(), email.Trim(), name.Trim(), passwordHash);
     }
+
+    /// <summary>
+    /// 永続化層からの再構成用（Phase 3）。
+    /// </summary>
+    internal static User Reconstitute(Guid id, string email, string name, string passwordHash) =>
+        new(id, email, name, passwordHash);
 }

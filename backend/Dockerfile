@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0
 WORKDIR /app
 
 # EF のCLI（マイグレーション用）をコンテナにも入れておく
-RUN dotnet tool install --global dotnet-ef
+RUN dotnet tool install --global dotnet-ef --version 8.*
 ENV PATH="$PATH:/root/.dotnet/tools"
 
 # ソースは compose の volume で同期する（開発用なのでここではコピーしない）。

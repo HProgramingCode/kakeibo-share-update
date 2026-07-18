@@ -30,7 +30,7 @@ services:
       # 接続先ホストは "localhost" ではなくサービス名 "db"
       ConnectionStrings__Default: "Host=db;Database=kakeibo;Username=kakeibo;Password=kakeibo_dev"
       ASPNETCORE_URLS: "http://+:8080"
-      Jwt__Key: "dev-only-secret-change-me"   # 開発用のJWT署名鍵
+      Jwt__Key: "dev-only-secret-change-me-min-32-chars!!"   # 開発用のJWT署名鍵（32文字以上）
     ports:
       - "8080:8080"
     volumes:

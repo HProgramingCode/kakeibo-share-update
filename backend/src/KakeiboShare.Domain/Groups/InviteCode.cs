@@ -7,5 +7,8 @@ namespace KakeiboShare.Domain.Groups;
 /// </summary>
 public readonly record struct InviteCode(string Value)
 {
+    /// <summary>
+    /// 8文字の英数字招待コードを生成する。
+    /// </summary>
     public static InviteCode Generate() => new(Guid.NewGuid().ToString("N")[..8].ToUpperInvariant());
 }

@@ -19,7 +19,7 @@ public sealed class Expense
     public bool IsSettled => SettlementId.HasValue;
 
     private Expense(Guid id, Guid groupId, Guid payerId, Category category, SplitType splitType,
-        int amount, IReadOnlyList<ExpenseShare> shares)
+        int amount, IReadOnlyList<ExpenseShare> shares, Guid? settlementId = null)
     {
         Id = id;
         GroupId = groupId;
@@ -28,8 +28,13 @@ public sealed class Expense
         SplitType = splitType;
         Amount = amount;
         Shares = shares;
+        SettlementId = settlementId;
     }
 
+    /// <summary>
+    /// 支払者・金額・割り勘結果から支出を新規作成する。
+    /// 負担合計は金額と一致すること。
+    /// </summary>
     public static Expense Create(Guid groupId, Guid payerId, Category category, SplitType splitType,
         int amount, IReadOnlyList<ExpenseShare> shares)
     {
@@ -40,6 +45,13 @@ public sealed class Expense
 
         return new Expense(Guid.NewGuid(), groupId, payerId, category, splitType, amount, shares);
     }
+
+    /// <summary>
+    /// 永続化層からの再構成用（Phase 3）。
+    /// </summary>
+    internal static Expense Reconstitute(Guid id, Guid groupId, Guid payerId, Category category,
+        SplitType splitType, int amount, IReadOnlyList<ExpenseShare> shares, Guid? settlementId) =>
+        new(id, groupId, payerId, category, splitType, amount, shares, settlementId);
 
     /// <summary>
     /// 精算に紐付けてロックする。未精算のときのみ可能。
@@ -56,5 +68,20 @@ public sealed class Expense
     public void EnsureEditable()
     {
         if (IsSettled) throw new DomainException("精算確定済みの支出は編集・削除できません");
+    }
+
+    /// <summary>
+    /// 未精算支出の内容を差し替えた新インスタンスを返す（ID・GroupId・SettlementIdは維持）。
+    /// </summary>
+    public Expense WithUpdatedContent(Guid payerId, Category category, SplitType splitType,
+        int amount, IReadOnlyList<ExpenseShare> shares)
+    {
+        EnsureEditable();
+        if (amount <= 0) throw new DomainException("金額は正である必要があります");
+        if (shares.Count == 0) throw new DomainException("負担者が1人以上必要です");
+        if (shares.Sum(s => s.Amount) != amount) throw new DomainException("負担合計は金額と一致する必要があります");
+        if (shares.All(s => s.UserId != payerId)) throw new DomainException("支払者は負担者に含まれる必要があります");
+
+        return new Expense(Id, GroupId, payerId, category, splitType, amount, shares, SettlementId);
     }
 }

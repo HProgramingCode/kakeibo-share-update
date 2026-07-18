@@ -29,6 +29,9 @@ public static class SettlementCalculator
     /// </summary>
     private const int MaxExact = 10;
 
+    /// <summary>
+    /// 純額の総和から送金本数が最小となる送金リストを求める。10人超は greedy にフォールバック。
+    /// </summary>
     public static IReadOnlyList<Transfer> MinTransfers(IReadOnlyDictionary<Guid, int> net)
     {
         if (net.Values.Sum() != 0)
